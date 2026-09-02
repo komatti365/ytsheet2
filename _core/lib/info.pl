@@ -16,7 +16,7 @@ $INDEX->param(modeInfo => 1);
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
-$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
+$INDEX->param(OAUTH_LOGIN_URL => getOAuthLoginUrl());
 
 my $code;
 $INDEX->param(message => $main::message =~ s/^([0-9]{3}):/$code = $1; ''/er);

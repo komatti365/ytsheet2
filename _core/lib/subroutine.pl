@@ -691,7 +691,8 @@ sub logOut {
 sub check {
   my ($in_id, $in_key) = &getCookie;
   return 0 if !$in_id || !$in_key;
-  open (my $FH, $set::login_users) or 0;
+  return 0 unless -e $set::login_users;
+  open (my $FH, '<', $set::login_users) or return 0;
   while (my $line = <$FH>){
     if(index($line, "$in_id<") == 0){
       my @data = (split/<>/, $line);
@@ -711,6 +712,7 @@ sub setCookie {
   my $cookie = new CGI::Cookie(
     -name    => $_[0] ,
     -value   => $value ,
+    -path    => '/' ,
     -expires => $_[3] ,
   );
   return ("Set-Cookie: $cookie\n");
@@ -722,6 +724,28 @@ sub getCookie {
   my $value   = $cookies{$set::cookie}->value if(exists $cookies{$set::cookie});
   my @return = split(/<>/, $value);
   return @return;
+}
+
+### OAuthログインURL生成 ------------------------------------------
+sub getOAuthLoginUrl {
+  return '' unless $set::oauth_service;
+  if ($set::oauth_service eq 'Discord') {
+    my $script = $ENV{'SCRIPT_NAME'} || '';
+    my $query  = $ENV{'QUERY_STRING'} || '';
+    my $from = $script;
+    $from .= '?' . $query if $query;
+    $from =~ s/([^a-zA-Z0-9_\-\.\/])/sprintf("%%%02X", ord($1))/eg;
+    
+    # 全システム共通のルート oauth.cgi を強制
+    my $redirect_url = $set::oauth_redirect_url || 'https://sheet.ena-vocalp.com/oauth.cgi';
+    my $redirect_encoded = $redirect_url;
+    $redirect_encoded =~ s/([^a-zA-Z0-9_\-\.])/sprintf("%%%02X", ord($1))/eg;
+    
+    my $url = "https://discord.com/oauth2/authorize?client_id=$set::oauth_client_id&response_type=code&redirect_uri=$redirect_encoded&scope=$set::oauth_scope";
+    $url .= "&state=$from" if $from;
+    return $url;
+  }
+  return $set::oauth_login_url;
 }
 
 ### ランダムID生成 --------------------------------------------------

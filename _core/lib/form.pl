@@ -52,7 +52,7 @@ elsif($mode eq 'edit-help'){
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
-$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
+$INDEX->param(OAUTH_LOGIN_URL => getOAuthLoginUrl());
 
 $INDEX->param(token => $token);
 $INDEX->param(registerkey => 1) if $set::registerkey;

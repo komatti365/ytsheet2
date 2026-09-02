@@ -124,4 +124,8 @@ package set;
   our $lib_palette = $::core_dir . '/lib/palette.pl'; # チャットパレット
   our $lib_json     = $::core_dir . '/lib/json.pl'; # JSON出力
 
+if (-e $::core_dir . '/config.cgi') {
+  require $::core_dir . '/config.cgi';
+}
+
 1;

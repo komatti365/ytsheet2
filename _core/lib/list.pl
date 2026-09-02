@@ -116,7 +116,7 @@ sub setupListTemplate {
 
   $template->param(LOGIN_ID => $LOGIN_ID);
   $template->param(OAUTH_MODE => $set::oauth_service);
-  $template->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
+  $template->param(OAUTH_LOGIN_URL => getOAuthLoginUrl());
 
   return $template;
 }
@@ -127,6 +127,7 @@ sub printFinalizedList {
     push(@pageTitles, $pageTitleParts{$_}) if exists $pageTitleParts{$_};
   }
   $template->param(pageTitle => join(' - ', @pageTitles) . ' - ') if @pageTitles;
+  print "Cache-Control: no-cache\n";
   print "Content-Type: text/html; charset=utf-8\n\n";
   print outputTemplate($template);
 }
