@@ -1,0 +1,28 @@
+# 環境依存・機密設定ファイル
+**/config.cgi
+config.cgi
+
+# 各システムのデータ保存ファイル（.htaccess と index.html は除外しない）
+**/data/*
+!**/data/.htaccess
+!**/data/index.html
+_core/data/*
+!_core/data/.htaccess
+!_core/data/index.html
+
+# ローカル一時ファイル・テストスクリプト
+check_modules.pl
+test_save.py
+sync_config.py
+pdf_text_extracted.txt
+パス
+*.pdf
+*.bak
+*.tmp
+*.lock
+
+# OS・エディタ関連
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
