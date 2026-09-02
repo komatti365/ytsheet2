@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<TMPL_INCLUDE NAME="../_common/sheet-head.html">
+</head>
+<body class="wide">
+  <header>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <nav>
+      <TMPL_INCLUDE NAME="../_common/sheet-menu.html">
+    </nav>
+  </header>
+  <div class="header-back-name"><b><TMPL_VAR titleName> - <TMPL_VAR title></b></div>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS modeDownload>
+    <TMPL_UNLESS forbiddenMode>
+      <aside id="loglist" class="float-box">
+        <h2>過去ログ（バックアップ）</h2>
+        <ul>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+        </ul>
+        <TMPL_IF viewLogNaming><details id="log-naming">
+          <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+          <form id="log-naming-form" method="post" action="./">
+            <input type="hidden" name="mode" value="bu-naming">
+            <input type="hidden" name="id" value="<TMPL_VAR id>">
+            <input type="hidden" name="date" value="<TMPL_VAR logId>">
+            <dl>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
+            </dl>
+          </form>
+        </details></TMPL_IF>
+      </aside>
+
+      <aside id="downloadlist" class="float-box">
+        <h2>出力</h2>
+        <ul>
+          <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a>
+          <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a>
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+        </ul>
+      </aside>
+    </TMPL_UNLESS>
+
+    <form id="login-form" class="float-box" method="post" action="./">
+      <input type="hidden" name="mode" value="edit">
+      <input type="hidden" name="id" value="<TMPL_VAR id>">
+      <input type="password" name="pass" placeholder="password">
+      <input type="hidden" name="log" value="<TMPL_VAR logId>">
+      <input type="submit" value="編集">
+    </form>
+  </TMPL_UNLESS>
+
+  <main id="character">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+
+    <article>
+      <!-- ヘッダー：名前・PL名・更新日時 -->
+      <div id="area-name" class="color-set">
+        <h1 id="character-name">
+          <TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF>
+          <TMPL_IF characterNameRuby><span class="ruby"><TMPL_VAR characterNameRuby></span></TMPL_IF>
+          <TMPL_VAR characterName>
+        </h1>
+        <div>
+          <p id="update-time"><time><TMPL_VAR updateTime></time></p>
+          <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
+        </div>
+      </div>
+
+      <!-- タグ -->
+      <div id="tags">
+        <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_LOOP Tags><a class="tag" href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+
+      <!-- 上段：ステータス ＆ 立ち絵エリア -->
+      <div class="column column-status">
+        <div id="area-status">
+          <!-- 立ち絵 -->
+          <div id="image">
+            <TMPL_IF image>
+              <div class="image current"
+                <TMPL_IF imageSpoiler>data-spoiler="<TMPL_VAR imageSpoiler ESCAPE=HTML>"</TMPL_IF>
+                style="
+                  background-image: url(<TMPL_VAR imageSrc>);
+                  background-size: <TMPL_VAR imageFit>;
+                  background-position: <TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
+                "
+              >
+                <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)">
+                  <TMPL_IF words><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>">“<TMPL_VAR words>”</p></TMPL_IF>
+                </div>
+                <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+              </div>
+            <TMPL_ELSE>
+              <div class="image-none" data-title="AA">
+                <TMPL_IF words><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>">“<TMPL_VAR words>”</p></TMPL_IF>
+              </div>
+            </TMPL_IF>
+          </div>
+
+          <!-- 所属情報 -->
+          <div id="school-info" class="box-union">
+            <dl class="box" id="school">
+              <dt>所属学園<dd><TMPL_VAR school>
+            </dl>
+            <dl class="box" id="grade">
+              <dt>学年<dd><TMPL_VAR grade>
+            </dl>
+            <dl class="box" id="age">
+              <dt>年齢<dd><TMPL_VAR age>
+            </dl>
+            <dl class="box" id="club">
+              <dt>部活<dd><TMPL_VAR club>
+            </dl>
+          </div>
+
+          <!-- バトルステータス -->
+          <div id="status" class="box-union">
+            <dl class="box" id="status-hp">
+              <dt>HP
+              <dd><b><TMPL_VAR hp></b> / <small><TMPL_VAR hpMax></small>
+            </dl>
+            <dl class="box" id="status-tension">
+              <dt>テンション
+              <dd><b><TMPL_VAR tension></b> / <small><TMPL_VAR tensionMax></small>
+            </dl>
+            <dl class="box" id="status-sp">
+              <dt>SP
+              <dd><b><TMPL_VAR sp DEFAULT="0"></b> / <small><TMPL_VAR spMax DEFAULT="10"></small>
+            </dl>
+            <dl class="box" id="status-position">
+              <dt>隊列
+              <dd><b><TMPL_VAR position></b>
+            </dl>
+            <dl class="box" id="status-weakness">
+              <dt>弱点
+              <dd><b class="weakness-text"><TMPL_VAR weakness></b>
+            </dl>
+          </div>
+
+          <!-- 固有武器 -->
+          <div id="weapon-box" class="box-union">
+            <dl class="box" id="weapon-name">
+              <dt>固有武器<dd><b><TMPL_VAR weaponSkillName DEFAULT=weaponName></b>
+            </dl>
+            <dl class="box" id="weapon-type">
+              <dt>銃種<dd><TMPL_VAR weaponType>
+            </dl>
+            <dl class="box" id="attack-type">
+              <dt>攻撃タイプ<dd><TMPL_VAR attackType>
+            </dl>
+            <dl class="box" id="weapon-damage">
+              <dt>基本火力<dd><b><TMPL_VAR damage></b>
+            </dl>
+            <dl class="box" id="weapon-bullet">
+              <dt>弾数<dd><TMPL_VAR bullet> / <TMPL_VAR bulletMax>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- 能力値・タグ -->
+      <section id="abilities" class="box">
+        <h2>能力値・タグ</h2>
+        <table class="data-table ability-table">
+          <thead>
+            <tr>
+              <th class="col-ability">能力値</th>
+              <th class="col-dice">ダイス数</th>
+              <th class="col-tag">背景</th>
+              <th class="col-tag">魅力</th>
+              <th class="col-tag">キャラ</th>
+              <th class="col-tag">趣味</th>
+              <th class="col-tag">戦術</th>
+            </tr>
+          </thead>
+          <tbody>
+            <TMPL_LOOP AbilityRows>
+            <tr>
+              <th class="ability-name"><TMPL_VAR NAME></th>
+              <td class="ability-dice"><b><TMPL_VAR DICE></b>D</td>
+              <TMPL_LOOP TagCells>
+              <td class="tag-cell">
+                <span class="tag-name"><TMPL_VAR TAG></span>
+              </td>
+              </TMPL_LOOP>
+            </tr>
+            </TMPL_LOOP>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- スキル一覧 -->
+      <section id="skills" class="box">
+        <h2>スキル</h2>
+        <div class="skills-container">
+          <!-- EXスキル -->
+          <div class="skill-entry skill-ex">
+            <div class="skill-header">
+              <span class="skill-category">EXスキル</span>
+              <span class="skill-title"><TMPL_VAR exSkillName></span>
+              <span class="skill-cost">コスト: <b><TMPL_VAR exSkillCost DEFAULT="2"></b></span>
+            </div>
+            <div class="skill-content">
+              <p><TMPL_VAR exSkillNote></p>
+            </div>
+          </div>
+
+          <!-- 武装スキル -->
+          <div class="skill-entry skill-weapon">
+            <div class="skill-header">
+              <span class="skill-category">武装スキル</span>
+              <span class="skill-title"><TMPL_VAR weaponSkillName DEFAULT=weaponName></span>
+              <span class="skill-meta">
+                <span class="badge"><TMPL_VAR weaponType></span>
+                <span class="badge"><TMPL_VAR attackType></span>
+                <span class="badge badge-damage"><TMPL_VAR damage></span>
+              </span>
+            </div>
+            <div class="skill-content">
+              <p><TMPL_VAR weaponSkillNote></p>
+            </div>
+          </div>
+
+          <!-- フルバーストスキル -->
+          <div class="skill-entry skill-fullburst">
+            <div class="skill-header">
+              <span class="skill-category">フルバーストスキル</span>
+              <span class="skill-title"><TMPL_VAR fullBurstSkillName></span>
+            </div>
+            <div class="skill-content">
+              <p><TMPL_VAR fullBurstSkillNote></p>
+            </div>
+          </div>
+
+          <!-- パーソナルスキル -->
+          <div class="skill-entry skill-personal">
+            <div class="skill-header">
+              <span class="skill-category">パーソナルスキル</span>
+              <span class="skill-title"><TMPL_VAR personalSkillName></span>
+              <TMPL_IF personalSkillTag><span class="skill-tag">【<TMPL_VAR personalSkillTag>】</span></TMPL_IF>
+            </div>
+            <div class="skill-content">
+              <p><TMPL_VAR personalSkillNote></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- お友達・知り合い ＆ リアクション表 -->
+      <div class="column column-sub">
+        <!-- お友達・知り合い -->
+        <section id="friends" class="box">
+          <h2>お友達・知り合い</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="col-type">区分</th>
+                <th>名前</th>
+                <th>呼び方</th>
+                <th class="col-emotion">感情値</th>
+                <th class="col-relation">関係</th>
+                <th class="col-support">応援</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP FriendsLoop>
+              <tr>
+                <td class="col-type type-friend">お友達</td>
+                <td><TMPL_VAR NAME></td>
+                <td><TMPL_VAR CALLING></td>
+                <td class="col-emotion"><b><TMPL_VAR EMOTION></b></td>
+                <td class="col-relation"><TMPL_VAR RELATION></td>
+                <td class="col-support"><TMPL_IF SUPPORT><span class="support-on">●</span><TMPL_ELSE><span class="support-off">○</span></TMPL_IF></td>
+              </tr>
+              </TMPL_LOOP>
+              <TMPL_LOOP AcquaintancesLoop>
+              <tr>
+                <td class="col-type type-acquaintance">知り合い</td>
+                <td><TMPL_VAR NAME></td>
+                <td><TMPL_VAR CALLING></td>
+                <td class="col-emotion"><b><TMPL_VAR EMOTION></b></td>
+                <td class="col-relation"><TMPL_VAR RELATION></td>
+                <td class="col-support"><TMPL_IF SUPPORT><span class="support-on">●</span><TMPL_ELSE><span class="support-off">○</span></TMPL_IF></td>
+              </tr>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- リアクション表 -->
+        <section id="reactions" class="box">
+          <h2>リアクション表</h2>
+          <table class="data-table reaction-table">
+            <thead>
+              <tr>
+                <th class="col-dice-num">出目</th>
+                <th>台詞 / リアクション</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP ReactionsLoop>
+              <tr>
+                <th class="col-dice-num">0<TMPL_VAR DICE></th>
+                <td class="reaction-text"><TMPL_VAR TEXT></td>
+              </tr>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <!-- 容姿・経歴・その他メモ -->
+      <TMPL_IF freeNote>
+      <section id="free-note" class="box">
+        <h2>容姿・経歴・その他メモ</h2>
+        <div class="free-note-body"><TMPL_VAR freeNote></div>
+      </section>
+      </TMPL_IF>
+
+      <!-- セッション履歴 -->
+      <TMPL_IF HistoryLoop>
+      <section id="history" class="box">
+        <h2>セッション履歴</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>GM</th>
+              <th>参加者</th>
+              <th>メモ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <TMPL_LOOP HistoryLoop>
+            <tr>
+              <td><TMPL_VAR NUM></td>
+              <td><TMPL_VAR DATE></td>
+              <td><TMPL_VAR TITLE></td>
+              <td><TMPL_VAR GM></td>
+              <td><TMPL_VAR MEMBER></td>
+              <td><TMPL_VAR NOTE></td>
+            </tr>
+            </TMPL_LOOP>
+          </tbody>
+        </table>
+      </section>
+      </TMPL_IF>
+    </article>
+
+    <div class="back-button"><a href="./">一覧に戻る</a></div>
+  </main>
+
+  <footer>
+    ©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver>
+  </footer>
+</body>
+</html>

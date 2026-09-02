@@ -1,0 +1,179 @@
+@charset "utf-8";
+
+/* ==========================================================================
+   アフターアーカイブ 編集画面スタイル (ゆとシートⅡ SW2.5完全準拠 & 治安向上)
+   ========================================================================== */
+
+#area-status {
+  display: grid;
+  margin: var(--box-v-gap, 20px) 0;
+  grid-template-columns: 2fr 1.3fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "PER IMG"
+    "STT IMG"
+  ;
+  gap: var(--box-v-gap, 20px) var(--box-h-gap, 15px);
+}
+
+#personal {
+  grid-area: PER;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1.2fr 0.8fr 0.8fr 1fr;
+  gap: 6px;
+  background: var(--box-base-bg-color, #ffffff);
+  border: 1px solid var(--box-outside-border-color, #cbd5e1);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+#personal dl.box {
+  margin: 0;
+  padding: 4px 6px;
+}
+
+#personal dl.box dt {
+  font-size: 0.8em;
+  color: var(--text-color-sub, #555);
+}
+
+#status {
+  grid-area: STT;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  background: var(--box-base-bg-color, #ffffff);
+  border: 1px solid var(--box-outside-border-color, #cbd5e1);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+#status dl.box {
+  margin: 0;
+  padding: 4px 6px;
+}
+
+#status dl.box dt {
+  font-size: 0.8em;
+  color: var(--text-color-sub, #555);
+}
+
+#image {
+  grid-area: IMG;
+}
+
+@media screen and (max-width: 850px) {
+  #personal {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 735px) {
+  #area-status {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "IMG"
+      "PER"
+      "STT"
+    ;
+  }
+  #personal {
+    grid-template-columns: 1fr 1fr;
+  }
+  #status {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 能力値・タグ テーブル */
+#abilities-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+#abilities-table th,
+#abilities-table td {
+  text-align: center;
+  padding: 6px 4px;
+  border: 1px solid var(--box-inside-border-color, #e2e8f0);
+}
+
+#abilities-table thead th {
+  background: var(--box-head-bg-color, #1a365d);
+  color: var(--box-head-color, #ffffff);
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+#abilities-table tbody th {
+  background: rgba(26, 54, 93, 0.05);
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+#abilities-table tfoot th {
+  background: rgba(26, 54, 93, 0.08);
+  font-weight: bold;
+}
+
+/* スキルグリッド */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.skills-grid .skill-card {
+  background: var(--box-base-bg-color, #ffffff);
+  border: 1px solid var(--box-outside-border-color, #cbd5e1);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.skills-grid .skill-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--theme-color, #247ba0);
+  padding-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+.skills-grid .skill-card-head h3 {
+  margin: 0;
+  font-size: 1.05em;
+  font-weight: bold;
+}
+
+.skill-ex .skill-card-head { border-bottom-color: #0284c7; }
+.skill-weapon .skill-card-head { border-bottom-color: #2563eb; }
+.skill-fullburst .skill-card-head { border-bottom-color: #dc2626; }
+.skill-personal .skill-card-head { border-bottom-color: #059669; }
+
+.skill-card dl {
+  margin: 0;
+}
+
+.skill-card dt {
+  font-size: 0.8em;
+  font-weight: bold;
+  color: var(--text-color-sub, #555);
+  margin-top: 6px;
+}
+
+.skill-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 0.9em;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+/* リアクション表 */
+#section-reactions table th {
+  background: rgba(26, 54, 93, 0.05);
+  font-size: 0.95em;
+  text-align: center;
+}

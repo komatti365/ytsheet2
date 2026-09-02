@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<TMPL_INCLUDE NAME="../_common/index-head.html">
+</head>
+
+<body>
+  <header>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <nav><TMPL_INCLUDE NAME="../_common/index-menu.html"></nav>
+    <div class="login-user"><span><TMPL_IF LOGIN_ID>ログイン中: <b><TMPL_VAR LOGIN_ID></b><TMPL_ELSE>ゲストさん（非ログイン）</TMPL_IF></span></div>
+  </header>
+  
+  <main>
+    <TMPL_INCLUDE NAME="skin-add/main-header.html">
+    <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
+
+    <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
+    <TMPL_INCLUDE NAME="../_common/form.html">
+    <TMPL_IF modeInfo>
+    <article>
+      <section class="info">
+        <h2><TMPL_VAR header></h2>
+        <p><TMPL_VAR message></p>
+      </section>
+    </article>
+    </TMPL_IF>
+    <TMPL_INCLUDE NAME="skin-add/main-footer.html">
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sidebar.html">
+  
+  <footer>
+    ©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver>
+  </footer>
+</body>
+</html>

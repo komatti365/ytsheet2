@@ -1,0 +1,250 @@
+@charset "utf-8";
+
+@layer system {
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
+.wide {
+  @media screen and (width >= 1200px){
+    .column-status {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+/* // Area-Status (立ち絵＋基本・バトルステータス)
+---------------------------------------------------------------------------------------------------- */
+#area-status {
+  display: grid;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
+  grid-template-columns: 2fr 1.3fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "SCH IMG"
+    "STT IMG"
+    "WEP IMG"
+  ;
+  margin-bottom: var(--box-v-gap);
+
+  @media screen and (width <= 767px){
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "IMG"
+      "SCH"
+      "STT"
+      "WEP"
+    ;
+  }
+
+  #image       { grid-area: IMG; }
+  #school-info { grid-area: SCH; }
+  #status      { grid-area: STT; }
+  #weapon-box  { grid-area: WEP; }
+}
+
+/* 所属ボックス */
+#school-info {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  @media screen and (width <= 600px){
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* バトルステータス */
+#status {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+  @media screen and (width <= 600px){
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#status dd {
+  font-size: 1.1rem;
+}
+
+.weakness-text {
+  color: #c0392b;
+  font-size: 0.95rem;
+}
+
+/* 武器ボックス */
+#weapon-box {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1fr 1fr;
+  @media screen and (width <= 600px){
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* // 能力値・タグ
+---------------------------------------------------------------------------------------------------- */
+.ability-table {
+  width: 100%;
+  table-layout: fixed;
+  text-align: center;
+}
+
+.ability-table thead th {
+  text-align: center;
+}
+
+.ability-table .col-ability { width: 6em; }
+.ability-table .col-dice    { width: 4.5em; }
+
+.ability-name {
+  font-weight: bold;
+}
+
+.ability-dice {
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+.tag-cell {
+  position: relative;
+  word-break: break-all;
+}
+
+.tag-cell.tag-used .tag-name {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.tag-mark {
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.mark-merit {
+  color: #2980b9;
+}
+
+.mark-demerit {
+  color: #c0392b;
+}
+
+/* // スキル一覧
+---------------------------------------------------------------------------------------------------- */
+.skills-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
+  @media screen and (width <= 767px){
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-entry {
+  border: 1px solid var(--box-border-color);
+  border-radius: var(--box-border-radius);
+  background: var(--box-base-bg-color);
+  overflow: hidden;
+}
+
+.skill-header {
+  background: var(--box-head-bg-color);
+  color: var(--box-head-color);
+  padding: 0.35rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--box-border-color);
+}
+
+.skill-category {
+  font-size: 0.75rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.skill-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.skill-cost {
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.skill-meta {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.badge-damage {
+  background: rgba(230, 126, 34, 0.8);
+  font-weight: bold;
+}
+
+.skill-tag {
+  font-size: 0.8rem;
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.skill-content {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.skill-content p {
+  margin: 0;
+}
+
+/* // 下段 2カラム (お友達・リアクション)
+---------------------------------------------------------------------------------------------------- */
+.column-sub {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
+  margin-top: var(--box-v-gap);
+  @media screen and (width <= 767px){
+    grid-template-columns: 1fr;
+  }
+}
+
+/* お友達テーブル */
+.col-type { width: 5em; text-align: center; }
+.type-friend { color: #2980b9; font-weight: bold; }
+.type-acquaintance { color: #7f8c8d; }
+.col-emotion { width: 4.5em; text-align: center; }
+.col-relation { width: 3.5em; text-align: center; font-weight: bold; }
+.col-support { width: 3.5em; text-align: center; }
+.support-on { color: #2980b9; font-size: 1.1rem; }
+.support-off { color: #bdc3c7; font-size: 1.1rem; }
+
+/* リアクション表 */
+.reaction-table .col-dice-num {
+  width: 3.5em;
+  text-align: center;
+}
+
+.reaction-text {
+  text-align: left;
+}
+
+/* // メモ欄
+---------------------------------------------------------------------------------------------------- */
+.free-note-body {
+  padding: 0.8rem 1rem;
+  line-height: 1.6;
+}
+
+} /* @layer system */

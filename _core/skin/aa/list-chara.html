@@ -1,0 +1,91 @@
+    <article>
+      <h1>キャラクター一覧</h1>
+      <a class="search-button" onclick="toggleHide('form-search')"></a>
+      <form method="get" action="./" name="search" id="form-search" class="hide">
+        <h3>検索条件</h3>
+        <TMPL_IF LOGIN_ID><label class="mylist"><input type="checkbox" name="mode" value="mylist" <TMPL_IF modeMylist>checked</TMPL_IF>>マイリスト内を検索</label></TMPL_IF>
+        <dl>
+          <dt>タグ
+            <dd><input type="text" name="tag" value="<TMPL_VAR tag>">
+          <dt>グループ
+            <dd><select name="group"><option value="all">すべて<TMPL_LOOP Groups><option value="<TMPL_VAR ID>" <TMPL_VAR SELECTED>><TMPL_VAR NAME></TMPL_LOOP></select>
+          <dt>名前
+            <dd><input type="text" name="name" value="<TMPL_VAR name>">
+          <dt>ＰＬ名
+            <dd><input type="text" name="player" value="<TMPL_VAR player>">
+          <dt>所属学園
+            <dd><input type="text" name="school" value="<TMPL_VAR school>">
+          <dt>部活
+            <dd><input type="text" name="club" value="<TMPL_VAR club>">
+          <dt>銃種
+            <dd><select name="weapon"><option value="">すべて
+              <option value="SMG">SMG（サブマシンガン）
+              <option value="AR">AR（アサルトライフル）
+              <option value="SG">SG（ショットガン）
+              <option value="SR">SR（スナイパーライフル）
+              <option value="MG">MG（マシンガン）
+              <option value="HG">HG（ハンドガン）
+              <option value="GL">GL（グレネードランチャー）
+              <option value="RG">RG（レールガン）
+              <option value="RL">RL（ロケットランチャー）
+              <option value="MT">MT（モーター）
+              <option value="FT">FT（フレイムスロワー）
+            </select>
+          <dt>隊列
+            <dd><select name="position"><option value="">すべて
+              <option value="フロント">フロント
+              <option value="ミドル">ミドル
+              <option value="バッグ">バッグ
+            </select>
+          <dt>画像
+            <dd><label><input type="checkbox" name="image" value="1" <TMPL_IF image>checked</TMPL_IF>>あり</dd></label>
+        </dl>
+        <p class="right"><input type="submit" value="検索"></p>
+      </form>
+      <script src="<TMPL_VAR coreDir>/skin/_common/js/list.js?<TMPL_VAR ver>" defer></script>
+      <TMPL_IF searchSummary><dl class="search-summary"><dt>検索結果<dd><TMPL_VAR searchSummary></dl></TMPL_IF>
+      <TMPL_LOOP Lists>
+      <section class="list" id="group-<TMPL_VAR ID>">
+        <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM>)</small></h2>
+        <TMPL_VAR PAGER>
+        <TMPL_IF simpleList>
+        <ul>
+          <TMPL_LOOP Lines><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
+          </TMPL_LOOP>
+        </ul>
+        <TMPL_ELSE>
+        <table>
+          <thead>
+            <tr>
+              <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a>
+              <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+              <th class="school"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=school">学園 / 部活</a>
+              <th class="weapon"><span>銃種 / 攻撃</span>
+              <th class="position"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=position">隊列</a>
+              <th class="status"><span>HP / テンション</span>
+              <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
+          </thead>
+          <TMPL_LOOP Lines><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
+            <td class="player"><TMPL_VAR PLAYER>
+            <td class="school"><span><TMPL_VAR SCHOOL><TMPL_IF GRADE>（<TMPL_VAR GRADE>）</TMPL_IF></span><TMPL_IF CLUB><small>／<TMPL_VAR CLUB></small></TMPL_IF>
+            <td class="weapon"><b><TMPL_VAR WEAPON></b><TMPL_IF ATTACK><small>／<TMPL_VAR ATTACK></small></TMPL_IF>
+            <td class="position"><TMPL_VAR POSITION>
+            <td class="status"><b><TMPL_VAR HP></b><small> / <TMPL_VAR TENSION></small>
+            <td class="tags"><TMPL_VAR TAGS></td>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
+        </table>
+        </TMPL_IF>
+        <TMPL_VAR PAGER>
+        <TMPL_IF MORE><p class="more"><a href="./?group=<TMPL_VAR ID>">>>MORE</a></p></TMPL_IF>
+      </section>
+      </TMPL_LOOP>
+      <TMPL_IF simpleIndex><section class="list">
+        <ul class="grouplist">
+        <TMPL_LOOP Groups><li><a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        </ul>
+      </section></TMPL_IF>
+    </article>
+    <div id="page-top-button"><a href="#"></a></div>
